@@ -1,7 +1,6 @@
 package com.example.myform
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -94,15 +93,6 @@ fun MyApp(viewModel: FormViewModel? = null) {
     }
 }
 
-private fun validateInput(name: String, age: String, dob: String?, address: String): Boolean {
-    val nameIsValid = name.isNotEmpty()
-    val ageIsValid = age.isNotEmpty() && age.toIntOrNull() != null
-    val dobIsValid = dob?.isNotEmpty()
-    val addressIsValid = address.isNotEmpty()
-
-    return nameIsValid && ageIsValid && dobIsValid == true && addressIsValid
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormScreen(viewModel: FormViewModel?) {
@@ -112,8 +102,6 @@ fun FormScreen(viewModel: FormViewModel?) {
     var saveDate by remember { mutableStateOf("") }
     val openDialog = remember { mutableStateOf(false) }
     var address by remember { mutableStateOf("") }
-
-    Log.d("DOB Before", saveDate)
 
     Column(modifier = Modifier
         .padding(20.dp)
@@ -156,7 +144,6 @@ fun FormScreen(viewModel: FormViewModel?) {
                             displaydate = dateFormatter(selectedDateSkeleton = "dd MMM, yyyy").formatDate(datePickerState.selectedDateMillis, locale = CalendarLocale.ENGLISH).toString()
                             savedate = dateFormatter(selectedDateSkeleton = "yyyy-MM-dd").formatDate(datePickerState.selectedDateMillis, locale = CalendarLocale.ROOT).toString()
                         }
-                        Log.d("DOB Between", saveDate)
                         displayDate = displaydate
                         saveDate = savedate
                     }, enabled = confirmEnabled.value) {
@@ -184,7 +171,6 @@ fun FormScreen(viewModel: FormViewModel?) {
             .fillMaxWidth()
             .padding(top = 30.dp), horizontalArrangement = Arrangement.End) {
             Button(onClick = {
-                Log.d("DOB After", saveDate)
                 if (viewModel?.validateForm(name, age, saveDate, address) == true) {
                     val data = FormData(0, name = name, age = age.toInt(), dob = saveDate, address = address)
                     viewModel.insertData(data)
